@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>⚡ Exponent Challenge</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, orange 70%, #222 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .card {
+      background: #111;
+      color: orange;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px #000a;
+      padding: 2.5em 2em 2em 2em;
+      min-width: 340px;
+      text-align: center;
+    }
+    .card h1 {
+      font-size: 2em;
+      margin-bottom: 1.2em;
+      letter-spacing: 1px;
+    }
+    .question {
+      font-size: 1.3em;
+      margin-bottom: 1.5em;
+      color: #fff;
+    }
+    input[type="number"] {
+      padding: 0.5em;
+      font-size: 1.1em;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+      margin-bottom: 1em;
+      width: 100px;
+      text-align: center;
+    }
+    button {
+      background: orange;
+      color: #111;
+      border: none;
+      border-radius: 6px;
+      padding: 0.6em 1.5em;
+      font-size: 1.1em;
+      font-weight: bold;
+      box-shadow: 0 0 12px 2px orange;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-left: 0.5em;
+    }
+    button:hover {
+      background: #ff9800;
+    }
+    .output {
+      margin-top: 1.2em;
+      font-size: 1.1em;
+      color: #fff;
+      min-height: 2em;
+    }
+    .correct {
+      color: #00ff99;
+    }
+    .wrong {
+      color: #ff4444;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>⚡ Exponent Challenge</h1>
+    <form method="POST" action="/">
+      <div class="question">
+        What is {{ base }}<sup>{{ exponent }}</sup>?
+      </div>
+      <input type="number" name="answer" required autocomplete="off" autofocus>
+      <input type="hidden" name="base" value="{{ base }}">
+      <input type="hidden" name="exponent" value="{{ exponent }}">
+      <button type="submit">Submit</button>
+    </form>
+    <div class="output">
+      {% if result and prev_base and prev_exponent %}
+        {% if result == "correct" %}
+          <span class="correct">Correct 🎉 ({{ prev_base }}^{{ prev_exponent }} = {{ correct }})</span>
+        {% elif result == "wrong" %}
+          <span class="wrong">Wrong ❌ ({{ prev_base }}^{{ prev_exponent }} = {{ correct }})</span>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</body>
