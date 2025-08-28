@@ -1,48 +1,61 @@
-from flask import Flask, render_template, request
+import tkinter as tk
 import random
 
-app = Flask(__name__)
+def new_question():
+    global base, power, correct_answer
+    base = random.randint(2, 9)      # base between 2–9
+    power = random.randint(2, 5)     # exponent between 2–5
+    correct_answer = base ** power
+    question_label.config(text=f"What is {base}^{power}?")
+    entry.delete(0, tk.END)
+    result_label.config(text="")
 
-def get_random_question():
-    base = random.randint(2, 9)
-    exponent = random.randint(2, 5)
-    return base, exponent
+def check_answer():
+    user_input = entry.get()
+    try:
+        if int(user_input) == correct_answer:
+            result_label.config(text=f"✅ Correct 🎉 ({base}^{power} = {correct_answer})", fg="lime")
+        else:
+            result_label.config(text="❌ Wrong", fg="red")
+    except ValueError:
+        result_label.config(text="Enter a valid number!", fg="yellow")
 
-@app.route("/", methods=["GET", "POST"])
-def index():
-    if request.method == "POST":
-        # Get previous question and user's answer
-        prev_base = int(request.form["base"])
-        prev_exponent = int(request.form["exponent"])
-        user_answer = request.form.get("answer", "")
-        correct = prev_base ** prev_exponent
-        try:
-            user_answer = int(user_answer)
-        except ValueError:
-            user_answer = None
-        result = "correct" if user_answer == correct else "wrong"
-        # Generate new question for next round
-        base, exponent = get_random_question()
-        return render_template(
-            "Project.html",
-            base=base,
-            exponent=exponent,
-            correct=correct,
-            result=result,
-            prev_base=prev_base,
-            prev_exponent=prev_exponent
-        )
-    else:
-        base, exponent = get_random_question()
-        return render_template(
-            "Project.html",
-            base=base,
-            exponent=exponent,
-            correct=None,
-            result=None,
-            prev_base=None,
-            prev_exponent=None
-        )
+# Main window
+root = tk.Tk()
+root.title("⚡ Exponent Challenge")
+root.configure(bg="black")
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+# Card frame
+card = tk.Frame(root, bg="orange", bd=5, relief="ridge")
+card.pack(padx=40, pady=40)
+
+# Title
+title = tk.Label(card, text="⚡ Exponent Challenge", font=("Arial", 20, "bold"), bg="orange", fg="white")
+title.pack(pady=10)
+
+# Question label
+question_label = tk.Label(card, text="", font=("Arial", 16), bg="orange", fg="black")
+question_label.pack(pady=5)
+
+# Input box
+entry = tk.Entry(card, font=("Arial", 14))
+entry.pack(pady=5)
+
+# Submit button
+submit_btn = tk.Button(card, text="Submit", font=("Arial", 14, "bold"), bg="black", fg="orange",
+                       activebackground="orange", activeforeground="black", command=check_answer)
+submit_btn.pack(pady=10)
+
+# Next question button
+next_btn = tk.Button(card, text="Next Question", font=("Arial", 12, "bold"), bg="orange", fg="black",
+                     command=new_question)
+next_btn.pack(pady=5)
+
+# Result label
+result_label = tk.Label(card, text="", font=("Arial", 14, "bold"), bg="orange")
+result_label.pack(pady=5)
+
+# Start with a random question
+new_question()
+
+root.mainloop()
